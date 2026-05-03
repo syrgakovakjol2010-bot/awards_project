@@ -4,61 +4,67 @@ import os
 
 app = Flask(__name__)
 
-# Используем папку /tmp для хранения файла, если мы на Render
-if os.environ.get('RENDER'):
-    VOTES_FILE = '/tmp/votes.json'
-else:
-    VOTES_FILE = 'votes.json'
+# Путь к базе данных (совместимо с Render)
+VOTES_FILE = '/tmp/votes.json' if os.environ.get('RENDER') else 'votes.json'
+
+# Полная структура всех наград и номинантов
+AWARDS_DATA = {
+    "cis": {
+        "streamer": {"title": "Лучший Стример", "icon": "🎮", "nominees": ["Buster", "Kuplinov", "Evelone192", "JesusAVGN", "Bratishkinoff", "Dmitry Lixxx", "Stray228"]},
+        "youtuber": {"title": "Лучший Ютубер", "icon": "🎥", "nominees": ["A4", "Дима Масленников", "Marmok", "HiMan", "Utopia Show", "Pryatki", "TheBrianMaps"]},
+        "musician": {"title": "Музыкант Года", "icon": "🎵", "nominees": ["Morgenshtern", "Slava Marlow", "Shadowraze", "Kizaru", "Big Baby Tape", "Instasamka", "Macan"]},
+        "mobile": {"title": "Mobile Автор", "icon": "📱", "nominees": ["Holdik", "AuRuM", "Злой", "Chizh", "Robzi", "IceArrow", "Pandora"]},
+        "tech": {"title": "Техноблогер", "icon": "💡", "nominees": ["Wylsacom", "808", "Rozetked", "Pro Hi-Tech", "Danya Master", "Чудо Техники"]},
+        "discovery": {"title": "Прорыв Года", "icon": "🎭", "nominees": ["Koreshzy", "Paradeevich", "Frame Tamer", "Akyuliych", "Danila Gorilla", "VooDooSh"]}
+    },
+    "world": {
+        "streamer": {"title": "Global Streamer", "icon": "🌍", "nominees": ["xQc", "Kai Cenat", "Ibai", "Ninja", "Rubius", "Asmongold", "Speed"]},
+        "youtuber": {"title": "Global YouTuber", "icon": "🌐", "nominees": ["MrBeast", "PewDiePie", "Mark Rober", "Dude Perfect", "Sidemen", "Casey Neistat", "Ryan Trahan"]},
+        "musician": {"title": "World Artist", "icon": "🎸", "nominees": ["Drake", "The Weeknd", "Travis Scott", "Taylor Swift", "Post Malone", "Kanye West", "Eminem"]},
+        "mobile": {"title": "Mobile Creator", "icon": "📲", "nominees": ["Ferg", "Tribal", "OrangeJuice", "Powerbang", "Godzly", "Bobby Plays"]},
+        "tech": {"title": "Tech Guru", "icon": "💻", "nominees": ["Marques Brownlee", "Linus Tech Tips", "Unbox Therapy", "Mrwhosetheboss", "iJustine", "Dave2D"]},
+        "discovery": {"title": "World Discovery", "icon": "✨", "nominees": ["IShowSpeed", "Sketch", "Jynxzi", "CaseOh", "Stable Ronaldo", "Baby OTT"]}
+    }
+}
 
 def init_db():
     if not os.path.exists(VOTES_FILE):
-        initial_data = {
-            "cis": {
-                "streamer": {"Buster": 0, "Kuplinov": 0, "Evelone192": 0, "JesusAVGN": 0, "Bratishkinoff": 0},
-                "youtuber": {"A4": 0, "Дима Масленников": 0, "Marmok": 0, "HiMan": 0, "Utopia Show": 0}
-            },
-            "world": {
-                "streamer": {"xQc": 0, "Kai Cenat": 0, "Ibai": 0, "Ninja": 0, "Rubius": 0},
-                "youtuber": {"MrBeast": 0, "PewDiePie": 0, "Mark Rober": 0, "Dude Perfect": 0, "Sidemen": 0}
-            }
-        }
+        db = {"cis": {}, "world": {}}
+        for region in AWARDS_DATA:
+            for cat, info in AWARDS_DATA[region].items():
+                db[region][cat] = {name: 0 for name in info["nominees"]}
         with open(VOTES_FILE, 'w', encoding='utf-8') as f:
-            json.dump(initial_data, f, ensure_ascii=False, indent=4)
+            json.dump(db, f, ensure_ascii=False, indent=4)
 
-def load_votes():
-    init_db()  # Проверяем базу перед каждым чтением
+def load_db():
+    init_db()
     with open(VOTES_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def save_votes(data):
+def save_db(data):
     with open(VOTES_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 @app.route('/')
-def home():
-    try:
-        votes = load_votes()
-        return render_template('index.html', votes=votes)
-    except Exception as e:
-        return f"Произошла ошибка: {e}", 500
+def index():
+    votes = load_db()
+    leaders = {"cis": {}, "world": {}}
+    for reg in ["cis", "world"]:
+        for cat in votes[reg]:
+            leaders[reg][cat] = max(votes[reg][cat], key=votes[reg][cat].get) if votes[reg][cat] else ""
+    return render_template('index.html', votes=votes, leaders=leaders, meta=AWARDS_DATA)
 
 @app.route('/vote', methods=['POST'])
 def vote():
-    req_data = request.get_json()
-    camp = req_data.get('camp')
-    category = req_data.get('category')
-    nominee = req_data.get('nominee')
-    
-    votes = load_votes()
-    
-    if camp in votes and category in votes[camp] and nominee in votes[camp][category]:
-        votes[camp][category][nominee] += 1
-        save_votes(votes)
-        return jsonify({"success": True, "new_votes": votes[camp][category][nominee]})
-        
-    return jsonify({"success": False, "error": "Некорректные данные"}), 400
+    data = request.json
+    reg, cat, name = data.get('reg'), data.get('cat'), data.get('name')
+    db = load_db()
+    if reg in db and cat in db[reg] and name in db[reg][cat]:
+        db[reg][cat][name] += 1
+        save_db(db)
+        new_leader = max(db[reg][cat], key=db[reg][cat].get)
+        return jsonify({"success": True, "count": db[reg][cat][name], "leader": new_leader})
+    return jsonify({"success": False}), 400
 
 if __name__ == '__main__':
-    init_db()
-    app.run(debug=True, port=5000)
-    
+    app.run(debug=True)

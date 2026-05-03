@@ -3,314 +3,478 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creators Awards | M.C.</title>
+    <title>M.C. | Creators Awards 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         :root {
-            --bg-color: #0f0f13;
-            --card-bg: #1a1a24;
-            --accent-1: #ff0055; /* Розовый неон */
-            --accent-2: #00f0ff; /* Синий неон */
-            --gold: #ffd700;     /* Золото */
-            --text-main: #ffffff;
-            --text-muted: #a0a0b5;
+            --primary: #ff0055;
+            --secondary: #00f0ff;
+            --gold: #ffd700;
+            --dark-bg: #08080c;
+            --card-bg: #11111d;
+            --glass: rgba(255, 255, 255, 0.03);
+            --text-muted: #8b8b9f;
         }
+
+        * { box-sizing: border-box; outline: none; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Inter', -apple-system, sans-serif;
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            padding-bottom: 120px;
+            overflow-x: hidden;
         }
 
-        /* Шапка сайта */
-        header {
-            text-align: center;
-            padding: 50px 20px;
-            background: linear-gradient(135deg, rgba(255,0,85,0.15) 0%, rgba(0,240,255,0.15) 100%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        /* Красивый анимированный фон */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #08080c 100%);
+            z-index: -1;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 15px var(--accent-1);
-        }
-
-        header p {
-            color: var(--text-muted);
-            margin-top: 10px;
-            font-size: 1.1rem;
-        }
-
-        /* Переключатель лагерей */
-        .camps-toggle {
+        /* Переключатель языка */
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 35px 0;
+            gap: 10px;
+            z-index: 1001;
         }
 
-        .camp-btn {
-            background: transparent;
-            color: var(--text-main);
-            border: 2px solid var(--accent-2);
-            padding: 12px 35px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 25px;
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 10px;
             cursor: pointer;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: 0.3s;
         }
 
-        .camp-btn:hover, .camp-btn.active {
-            background: var(--accent-2);
-            color: #000;
-            box-shadow: 0 0 15px var(--accent-2);
+        .lang-btn.active {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
-        /* Основной контейнер */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .camp-section {
-            display: none;
-        }
-
-        .camp-section.active {
-            display: block;
-        }
-
-        .category-title {
-            font-size: 1.8rem;
-            border-left: 4px solid var(--accent-1);
-            padding-left: 15px;
-            margin: 40px 0 25px;
-        }
-
-        /* Сетка карточек */
-        .nominees-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
+        header {
+            padding: 80px 20px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.03);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            border-bottom: 1px solid var(--glass);
+            background: linear-gradient(to bottom, rgba(255, 0, 85, 0.1), transparent);
             position: relative;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-1);
-            box-shadow: 0 5px 15px rgba(255,0,85,0.1);
+        .logo-box h1 {
+            font-size: 4rem;
+            margin: 0;
+            letter-spacing: -2px;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 85, 0.3));
         }
 
-        /* Бейдж кандидата на золото */
-        .gold-badge {
-            background: var(--gold);
-            color: #000;
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 4px;
-            position: absolute;
-            top: 15px;
-            right: 15px;
+        #ui-subtitle {
+            margin-top: 10px;
+            opacity: 0.6;
+            letter-spacing: 4px;
+            font-weight: 300;
             text-transform: uppercase;
         }
 
-        .avatar-placeholder {
-            width: 80px;
-            height: 80px;
-            background: #252533;
+        .statue-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid var(--gold);
+            border-radius: 15px;
+            display: inline-block;
+            font-size: 0.95rem;
+            max-width: 650px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-view { display: none; }
+        .section-view.active { display: block; animation: fadeIn 0.6s; }
+
+        .category-group { margin-bottom: 80px; }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--glass);
+        }
+
+        .category-header h2 {
+            font-size: 2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .leader-tag {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--gold);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        /* КАРТОЧКА НОМИНАНТА */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            border-color: var(--primary);
+            background: #161625;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+
+        .card.winner {
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
+        }
+
+        .card.winner::after {
+            content: 'TOP 1';
+            position: absolute;
+            top: 15px;
+            right: -25px;
+            background: var(--gold);
+            color: black;
+            font-weight: 900;
+            font-size: 0.7rem;
+            padding: 5px 30px;
+            transform: rotate(45deg);
+        }
+
+        .icon-circle {
+            width: 90px; height: 90px;
+            background: var(--glass);
             border-radius: 50%;
-            margin: 10px auto 15px;
-            border: 2px solid var(--accent-2);
+            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
+            font-size: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
         }
 
-        .card h3 {
-            margin: 10px 0 5px;
-            font-size: 1.25rem;
+        .card:hover .icon-circle {
+            border-color: var(--secondary);
+            transform: scale(1.1);
         }
 
-        .card .trophy {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 5px;
-        }
-
-        .card .votes-count {
-            color: var(--accent-2);
-            font-weight: bold;
+        .v-name {
+            font-size: 1.4rem;
+            font-weight: 700;
             margin-bottom: 15px;
-            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .v-count {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
         }
 
         .vote-btn {
-            background-color: var(--accent-1);
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 0;
             width: 100%;
-            border-radius: 6px;
+            padding: 16px;
+            border-radius: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            transition: 0.3s;
         }
 
-        .vote-btn:hover {
-            background-color: #ff3377;
-            box-shadow: 0 0 10px var(--accent-1);
+        .vote-btn:hover:not(:disabled) {
+            background: #ff3377;
+            box-shadow: 0 0 20px var(--primary);
         }
 
-        /* Подвал */
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-            margin-top: 60px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        .vote-btn:disabled {
+            background: #222;
+            color: #555;
+            cursor: not-allowed;
+            border: 1px solid transparent;
+        }
+
+        /* НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ */
+        .bottom-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(17, 17, 29, 0.85);
+            backdrop-filter: blur(20px);
+            padding: 10px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+        }
+
+        .nav-btn {
+            border: none;
+            background: transparent;
+            color: white;
+            padding: 14px 35px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 800;
             font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: var(--secondary);
+            color: black;
+            box-shadow: 0 0 20px var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .logo-box h1 { font-size: 2.5rem; }
+            .grid { grid-template-columns: 1fr; }
+            .bottom-bar { width: 90%; justify-content: space-around; }
+            .nav-btn { padding: 12px 15px; font-size: 0.8rem; flex: 1; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Creators Awards</h1>
-        <p>Голосование за лучших авторов десятилетия и года от M.C.</p>
-    </header>
+<div class="lang-switcher">
+    <button class="lang-btn" id="lang-ru" onclick="setLanguage('ru')">RU</button>
+    <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
+</div>
 
-    <div class="camps-toggle">
-        <button class="camp-btn active" onclick="switchCamp('cis')">Лагерь: СНГ</button>
-        <button class="camp-btn" onclick="switchCamp('world')">Лагерь: Весь Мир</button>
+<header>
+    <div class="logo-box">
+        <h1 class="animate__animated animate__zoomIn">CREATORS AWARDS</h1>
+        <div id="ui-subtitle">MISTORI COPANI (M.C.) ENTERPRISE</div>
     </div>
+    <div class="statue-info animate__animated animate__fadeInUp" id="ui-statue">
+        Победитель Топ-1 получит Золотую статую (999 карат), когда M.C. разбогатеет!
+    </div>
+</header>
 
-    <div class="container">
+<div class="container">
+    {% for reg_id in ['cis', 'world'] %}
+    <div id="view-{{ reg_id }}" class="section-view {% if reg_id == 'cis' %}active{% endif %}">
         
-        <div id="cis-section" class="camp-section active">
-            
-            <h2 class="category-title">🏆 Лучший стример (СНГ)</h2>
-            <div class="nominees-grid">
-                {% for nominee, count in votes['cis']['streamer'].items() %}
-                <div class="card">
-                    <span class="gold-badge">Топ-1 Статуя</span>
-                    <div class="avatar-placeholder">🎮</div>
-                    <h3>{{ nominee }}</h3>
-                    <p class="trophy">🏆 Золотой Микрофон</p>
-                    <p class="votes-count" id="cis-streamer-{{ nominee }}">{{ count }} голосов</p>
-                    <button class="vote-btn" onclick="sendVote('cis', 'streamer', '{{ nominee }}')">Голосовать</button>
+        {% for cat_id, info in meta[reg_id].items() %}
+        <div class="category-group">
+            <div class="category-header">
+                <h2 class="cat-title" data-ru="{{ info.ru }}" data-en="{{ info.en }}">
+                    {{ info.icon }} {{ info.ru }}
+                </h2>
+                <div class="leader-tag" id="L-{{ reg_id }}-{{ cat_id }}" 
+                     data-prefix-ru="Лидер: " data-prefix-en="Leader: ">
+                    Лидер: {{ leaders[reg_id][cat_id] }}
+                </div>
+            </div>
+
+            <div class="grid">
+                {% for name in info.nominees %}
+                <div class="card {% if name == leaders[reg_id][cat_id] %}winner{% endif %}" 
+                     id="C-{{ reg_id }}-{{ cat_id }}-{{ name }}">
+                    
+                    <div class="icon-circle">{{ info.icon }}</div>
+                    <div class="v-name">{{ name }}</div>
+                    <div class="v-count" id="V-{{ reg_id }}-{{ cat_id }}-{{ name }}">
+                        {{ votes[reg_id][cat_id][name] }}
+                    </div>
+                    
+                    <button class="vote-btn" 
+                            id="B-{{ reg_id }}-{{ cat_id }}-{{ name }}"
+                            data-btn-ru="Голосовать" data-btn-en="Vote"
+                            data-limit-ru="Лимит (2/2)" data-limit-en="Limit (2/2)"
+                            onclick="doVote('{{ reg_id }}', '{{ cat_id }}', '{{ name }}')">
+                        Голосовать
+                    </button>
                 </div>
                 {% endfor %}
             </div>
-
-            <h2 class="category-title">🎬 Лучший ютубер (СНГ)</h2>
-            <div class="nominees-grid">
-                {% for nominee, count in votes['cis']['youtuber'].items() %}
-                <div class="card">
-                    <span class="gold-badge">Топ-1 Статуя</span>
-                    <div class="avatar-placeholder">🎥</div>
-                    <h3>{{ nominee }}</h3>
-                    <p class="trophy">🏆 Рубиновая Кнопка</p>
-                    <p class="votes-count" id="cis-youtuber-{{ nominee }}">{{ count }} голосов</p>
-                    <button class="vote-btn" onclick="sendVote('cis', 'youtuber', '{{ nominee }}')">Голосовать</button>
-                </div>
-                {% endfor %}
-            </div>
-
         </div>
-
-        <div id="world-section" class="camp-section">
-            
-            <h2 class="category-title">🏆 Лучший стример (Мир)</h2>
-            <div class="nominees-grid">
-                {% for nominee, count in votes['world']['streamer'].items() %}
-                <div class="card">
-                    <span class="gold-badge">Топ-1 Статуя</span>
-                    <div class="avatar-placeholder">🌍</div>
-                    <h3>{{ nominee }}</h3>
-                    <p class="trophy">🏆 Корона Эфира</p>
-                    <p class="votes-count" id="world-streamer-{{ nominee }}">{{ count }} голосов</p>
-                    <button class="vote-btn" onclick="sendVote('world', 'streamer', '{{ nominee }}')">Голосовать</button>
-                </div>
-                {% endfor %}
-            </div>
-
-            <h2 class="category-title">🎬 Лучший ютубер (Мир)</h2>
-            <div class="nominees-grid">
-                {% for nominee, count in votes['world']['youtuber'].items() %}
-                <div class="card">
-                    <span class="gold-badge">Топ-1 Статуя</span>
-                    <div class="avatar-placeholder">🌐</div>
-                    <h3>{{ nominee }}</h3>
-                    <p class="trophy">🏆 Планетарный Объектив</p>
-                    <p class="votes-count" id="world-youtuber-{{ nominee }}">{{ count }} голосов</p>
-                    <button class="vote-btn" onclick="sendVote('world', 'youtuber', '{{ nominee }}')">Голосовать</button>
-                </div>
-                {% endfor %}
-            </div>
-
-        </div>
+        {% endfor %}
 
     </div>
+    {% endfor %}
+</div>
 
-    <footer>
-        <p>&copy; 2026 Mistori Copani (M.C.). Все права защищены.</p>
-    </footer>
+<div class="bottom-bar">
+    <button class="nav-btn active" id="nb-cis" 
+            data-ru="СНГ ЛАГЕРЬ" data-en="CIS CAMP" 
+            onclick="setRegion('cis')">СНГ ЛАГЕРЬ</button>
+    
+    <button class="nav-btn" id="nb-world" 
+            data-ru="ВЕСЬ МИР" data-en="WORLDWIDE" 
+            onclick="setRegion('world')">ВЕСЬ МИР</button>
+</div>
 
-    <script>
-        // Переключение между лагерями СНГ и Весь Мир
-        function switchCamp(camp) {
-            document.querySelectorAll('.camp-section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.camp-btn').forEach(btn => btn.classList.remove('active'));
+<script>
+    // Система переводов
+    const uiData = {
+        ru: {
+            subtitle: "MISTORI COPANI (M.C.) ENTERPRISE",
+            statue: "🏆 Победитель Топ-1 получит Золотую статую (999 карат), когда M.C. разбогатеет!",
+            leaderPrefix: "Лидер: "
+        },
+        en: {
+            subtitle: "MISTORI COPANI (M.C.) ENTERPRISE",
+            statue: "🏆 The Top-1 winner will receive a Golden Statue (999 carats) when M.C. gets rich!",
+            leaderPrefix: "Leader: "
+        }
+    };
 
-            if (camp === 'cis') {
-                document.getElementById('cis-section').classList.add('active');
-                document.querySelectorAll('.camp-btn')[0].classList.add('active');
+    let currentLang = localStorage.getItem('mc_lang') || 'ru';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mc_lang', lang);
+        
+        // Активные кнопки языка
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('lang-' + lang).classList.add('active');
+
+        // Перевод шапки
+        document.getElementById('ui-subtitle').innerText = uiData[lang].subtitle;
+        document.getElementById('ui-statue').innerText = uiData[lang].statue;
+
+        // Перевод категорий
+        document.querySelectorAll('.cat-title').forEach(el => {
+            const icon = el.innerText.split(' ')[0];
+            el.innerText = icon + " " + el.getAttribute('data-' + lang);
+        });
+
+        // Перевод префиксов лидеров
+        document.querySelectorAll('.leader-tag').forEach(el => {
+            const name = el.innerText.split(': ')[1] || "";
+            el.innerText = uiData[lang].leaderPrefix + name;
+        });
+
+        // Перевод кнопок регионов
+        document.querySelectorAll('.nav-btn').forEach(el => {
+            el.innerText = el.getAttribute('data-' + lang);
+        });
+
+        updateButtonsUI();
+    }
+
+    function getVoteCount(reg, cat, name) {
+        return parseInt(localStorage.getItem(`v_mc_${reg}_${cat}_${name}`) || "0");
+    }
+
+    function updateButtonsUI() {
+        document.querySelectorAll('.vote-btn').forEach(btn => {
+            const parts = btn.id.split('-'); // B-reg-cat-name
+            const count = getVoteCount(parts[1], parts[2], parts[3]);
+            
+            if(count >= 2) {
+                btn.disabled = true;
+                btn.innerText = btn.getAttribute('data-limit-' + currentLang);
             } else {
-                document.getElementById('world-section').classList.add('active');
-                document.querySelectorAll('.camp-btn')[1].classList.add('active');
+                btn.innerText = btn.getAttribute('data-btn-' + currentLang);
             }
-        }
+        });
+    }
 
-        // Отправка голоса на бэкенд без перезагрузки страницы
-        function sendVote(camp, category, nominee) {
-            fetch('/vote', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ camp: camp, category: category, nominee: nominee })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const elementId = `${camp}-${category}-${nominee}`;
-                    document.getElementById(elementId).innerText = `${data.new_votes} голосов`;
-                } else {
-                    alert('Произошла ошибка при голосовании.');
-                }
-            })
-            .catch(err => console.error('Ошибка:', err));
+    function setRegion(reg) {
+        document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById('view-' + reg).classList.add('active');
+        document.getElementById('nb-' + reg).classList.add('active');
+        
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    async function doVote(reg, cat, name) {
+        const currentCount = getVoteCount(reg, cat, name);
+        if(currentCount >= 2) return;
+
+        const res = await fetch('/vote', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({reg, cat, name})
+        });
+        const data = await res.json();
+
+        if(data.success) {
+            // Сохраняем в локальное хранилище
+            localStorage.setItem(`v_mc_${reg}_${cat}_${name}`, currentCount + 1);
+            
+            // Анимация и обновление цифр
+            const countEl = document.getElementById(`V-${reg}-${cat}-${name}`);
+            countEl.innerText = data.count;
+            countEl.classList.add('animate__animated', 'animate__bounceIn');
+            setTimeout(() => countEl.classList.remove('animate__bounceIn'), 800);
+
+            // Обновление лидера
+            document.getElementById(`L-${reg}-${cat}`).innerText = uiData[currentLang].leaderPrefix + data.leader;
+            
+            // Смена золотой рамки
+            document.querySelectorAll(`[id^="C-${reg}-${cat}-"]`).forEach(c => c.classList.remove('winner'));
+            document.getElementById(`C-${reg}-${cat}-${data.leader}`).classList.add('winner');
+
+            updateButtonsUI();
         }
-    </script>
+    }
+
+    // Запуск при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+        setLanguage(currentLang);
+    });
+</script>
+
 </body>
-  </html>
-  
+    </html>
+    
